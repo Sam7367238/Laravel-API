@@ -7,6 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Http\Resources\PostResource;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
@@ -15,7 +18,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        dd("Index.");
+        $posts = Post::with("user") -> orderBy("created_at", "desc") -> paginate(10);
+
+        return PostResource::collection($posts);
     }
 
     /**
@@ -23,7 +28,9 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        //
+        Auth::user() -> posts() -> create($request -> validated());
+
+        return response() -> json([], 201);
     }
 
     /**
@@ -31,7 +38,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return new PostResource($post);
     }
 
     /**
@@ -39,7 +46,9 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        //
+        $post -> update($request -> validated());
+
+        return response() -> json([], 204);
     }
 
     /**
@@ -47,6 +56,10 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        Gate::authorize("owner", $post);
+        
+        $post -> delete();
+
+        return response() -> json([], 204);
     }
 }
