@@ -28,9 +28,9 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        Auth::user() -> posts() -> create($request -> validated());
+        $post = Auth::user() -> posts() -> create($request -> validated());
 
-        return response() -> json([], 201);
+        return response() -> json(new PostResource($post), 201);
     }
 
     /**
@@ -57,7 +57,7 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         Gate::authorize("owner", $post);
-        
+
         $post -> delete();
 
         return response() -> json([], 204);
