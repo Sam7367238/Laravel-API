@@ -10,18 +10,19 @@ use Illuminate\Validation\ValidationException;
 
 class SessionController extends Controller
 {
-    public function store(Request $request) {
-        $validated = $request -> validate([
-            "email" => ["required", "email"],
-            "password" => "required"
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => 'required',
         ]);
 
-        if (!Auth::attempt($validated)) {
-            throw ValidationException::withMessages(["email" => "Credentials do not match."]);
+        if (! Auth::attempt($validated)) {
+            throw ValidationException::withMessages(['email' => 'Credentials do not match.']);
         }
 
-        $user = $request -> user();
-        $token = $user -> createToken("main") -> plainTextToken;
+        $user = $request->user();
+        $token = $user->createToken('main')->plainTextToken;
 
         /*
         return response() -> json([
@@ -31,8 +32,8 @@ class SessionController extends Controller
         */
 
         return [
-            "user" => new UserResource($user),
-            "token" => $token
+            'user' => new UserResource($user),
+            'token' => $token,
         ];
     }
 }

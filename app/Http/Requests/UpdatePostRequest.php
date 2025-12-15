@@ -11,7 +11,7 @@ class UpdatePostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this -> user() -> can("owner", $this -> route("post"));
+        return $this->user()->can('owner', $this->route('post'));
     }
 
     /**
@@ -22,8 +22,8 @@ class UpdatePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "title" => ["required", "min:3"],
-            "content" => ["required", "min:3"]
+            'title' => ['required', 'min:3'],
+            'content' => ['required', 'min:3'],
         ];
     }
 }
